@@ -2,13 +2,14 @@ import './App.css';
 import Navbar from './components/Navbar';
 import { publicRoute } from './routes/publicRoutes';
 import { Route, Routes } from 'react-router-dom';
-// import { useEffect } from 'react';
-// import { themeChange } from 'theme-change';
 
-// AOS 
+// Animate_On_Scroll(AOS)
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useEffect } from 'react';
+import PrivateRoute from './authentication/PrivateRoute';
+import Services from './pages/Services';
+import { privateRoutes } from './routes/privateRoutes';
 
 
 
@@ -21,10 +22,6 @@ function App() {
     AOS.init();
   }, [])
 
-  /* useEffect(() => {
-    themeChange(false)
-    // false parameter is required for react project
-  }, []); */
 
   return (
     <Navbar>
@@ -45,6 +42,24 @@ function App() {
             key={index}
           ></Route>)
         }
+
+        {/* <Route path='/services'
+          element={
+            <PrivateRoute>
+              <Services></Services>
+            </PrivateRoute>
+          }>
+        </Route> */}
+        {/* ----- pathless route -------- */}
+        <Route element={<PrivateRoute />} >
+          {
+            privateRoutes.map(({ path, Component }, index) => <Route
+              key={index}
+              path={path}
+              element={<Component />}>
+            </Route>)
+          }
+        </Route>
 
       </Routes>
     </Navbar>
