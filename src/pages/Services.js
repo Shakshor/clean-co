@@ -2,8 +2,17 @@ import React from 'react';
 
 const Services = () => {
     return (
-        <div>
-            <h2>Services.</h2>
+        <div className='mt-40'>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+            <h2 className='text-lg'>Services.</h2>
+
         </div>
     );
 };

@@ -1,9 +1,29 @@
+import { signOut } from 'firebase/auth';
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { auth } from '../authentication/firebase.init';
+import useAdmin from '../hooks/useAdmin';
 
 const Navbar = ({ children }) => {
     // theme change state
     const [dark, setDark] = useState(false);
+    // admin check
+    const [admin] = useAdmin();
+    const { pathname } = useLocation();
+    console.log(pathname);
+    const navigate = useNavigate();
+    const [user, loading, error] = useAuthState(auth);
+
+    if (loading) {
+        return <p>loading..</p>
+    }
+
+    const handleSignOut = () => {
+        signOut(auth);
+        navigate('/');
+    }
+
 
     return (
         <main data-theme={dark ? "dark" : "light"}>
@@ -12,19 +32,38 @@ const Navbar = ({ children }) => {
                 <div className="drawer-content flex flex-col">
                     {/* <!-- Navbar --> */}
                     <div className="w-full navbar fixed top-0 bg-base-100 lg:px-20 z-30">
+                        {
+                            pathname.includes('dashboard') && (
+                                <label tabIndex={0} htmlFor="my-drawer" className="btn btn-ghost lg:hidden">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+                                </label>
+                            )
+                        }
+
                         <div className="flex-1 px-2 mx-2 text-2xl font-bold">Clean Co</div>
                         <div className="flex-none lg:hidden">
                             <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg> */}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
                             </label>
                         </div>
 
                         <div className="flex-none hidden lg:block">
                             <ul className="menu menu-horizontal">
+
                                 {/* <!-- Navbar menu content here --> */}
                                 <li>
                                     <NavLink to='/' className='rounded-lg'>Home</NavLink>
                                 </li>
+
+                                {/* ------admin checking ------- */}
+                                {admin &&
+                                    <li>
+                                        <NavLink to='/dashboard/add-service' className='rounded-lg'>Dashboard</NavLink>
+                                    </li>
+                                }
+                                {/* ------------------------ */}
+
                                 <li>
                                     <NavLink to='/about' className='rounded-lg'>About</NavLink>
                                 </li>
@@ -35,14 +74,18 @@ const Navbar = ({ children }) => {
                                     <NavLink to='/contact' className='rounded-lg'>Contact</NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to='/login' className='rounded-lg'>Login</NavLink>
+                                    {
+                                        user ? <button onClick={handleSignOut} >SignOut</button> :
+                                            <NavLink to='/login' className='rounded-lg'>Login</NavLink>
+                                    }
+                                    {/* <NavLink to='/login' className='rounded-lg'>Login</NavLink> */}
                                 </li>
 
                                 <li className="dropdown dropdown-hover dropdown-end mt-2">
                                     <label tabIndex={0} className="btn btn-primary btn-outline rounded-lg">Book Now</label>
                                     <ul tabIndex={0} className="dropdown-content menu shadow bg-base-100 rounded-box w-52">
-                                        <li><a href='#'>Item 1</a></li>
-                                        <li><a href='#'>Item 2</a></li>
+                                        <li><Link to='#'>Item 1</Link></li>
+                                        <li><Link to='#'>Item 2</Link></li>
                                     </ul>
                                 </li>
 
@@ -53,8 +96,6 @@ const Navbar = ({ children }) => {
                                         <svg className="swap-off fill-current w-10 h-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" /></svg>
                                     </label>
                                 </li>
-
-
 
                             </ul>
                         </div>
@@ -81,7 +122,12 @@ const Navbar = ({ children }) => {
                             <NavLink to='/contact' className='rounded-lg'>Contact</NavLink>
                         </li>
                         <li>
-                            <NavLink to='/login' className='rounded-lg'>Login</NavLink>
+                            {
+                                user ? <button onClick={handleSignOut} >SignOut</button> :
+                                    <NavLink to='/login' className='rounded-lg'>Login</NavLink>
+                            }
+
+                            {/* <NavLink to='/login' className='rounded-lg'>Login</NavLink> */}
                         </li>
 
                         <li className='w-10'>
@@ -106,10 +152,6 @@ const Navbar = ({ children }) => {
                                 </li>
                             </div>
                         </div>
-
-
-
-
                     </ul>
 
                 </div>

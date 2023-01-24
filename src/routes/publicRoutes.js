@@ -7,7 +7,7 @@ import Register from '../components/Register';
 
 
 
-export const publicRoute = [
+export const publicRoutes = [
     { path: '/', name: 'Home', Component: Home },
     { path: '/contact', name: 'Contact', Component: Contact },
     { path: '/login', name: 'Login', Component: Login },

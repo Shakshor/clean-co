@@ -5,7 +5,7 @@ const Landing = () => {
     return (
         <section className='relative'>
             {/* ------ 1st part -------- */}
-            <div className=" hero h-screen lg:h-[60vh] bg-accent mt-20 z-10">
+            <div className=" hero h-screen lg:h-[60vh] bg-accent z-10">
                 <div className="hero-content flex-col lg:flex-row">
 
                     <div>
